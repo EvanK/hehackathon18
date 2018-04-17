@@ -1,0 +1,138 @@
+<html>
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+        table, th, td {
+           border: 1px solid black;
+        }
+        tr:hover {
+            background-color: whitesmoke;
+        }
+        th, td {
+            padding: 5px;
+        }
+        tr.label, td.label {
+            font-weight: bold;
+        }
+/*        div.page table {
+            float: left;
+        }*/
+        .header {
+            text-align: center;
+        }
+        .row {
+            display: flex;
+        }
+        .column {
+            flex: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header"><input id="iterator" type="number" min="1" max="81" value="1" /></div>
+    <div class="row first"></div>
+    <div class="row second"></div>
+
+    <script type="text/javascript" src="./jquery.min.js"></script>
+    <script type="text/javascript">
+        var jsonTable = function (title, inputData, containerSelector) {
+            // default container to doc body
+            if (!containerSelector) {
+                containerSelector = 'body';
+            }
+
+            var inputRootType = Object.prototype.toString.call(inputData);
+
+            var tableNode = $('<table></table>');
+            var wrapper = $('<div class="column"></div>');
+
+            // simple side-by-side table, for individual object
+            if (inputRootType == '[object Object]') {
+                for (var key in inputData) {
+                    tableNode.append('<tr><td class="label">'+key+'</td><td>'+inputData[key]+'</td></tr>');
+                }
+
+                if (title) {
+                    wrapper.append('<strong>'+title+'</strong>');
+                }
+
+                wrapper.append(tableNode);
+                return $(containerSelector).append(wrapper);
+            }
+
+            if (inputRootType !== '[object Array]') {
+                throw new Error('Expected object or array of objects, got '+inputRootType);
+            }
+
+            // gather all column names
+            var cols = [];
+            for (var item of inputData) {
+                for (var key in item) {
+                    if (cols.indexOf(key) === -1) {
+                        cols.push(key);
+                    }
+                }
+            }
+
+            var tableHeader = $('<thead><tr class="label"><td>'+ cols.join('</td><td>') +'</td></tr></thead>');
+            tableNode.append(tableHeader)
+
+            for (var item of inputData) {
+                var tableRow = $('<tr></tr>');
+
+                for (var key of cols) {
+                    if (item.hasOwnProperty(key)) {
+                        tableRow.append('<td>'+item[key]+'</td>');
+                    }
+                    else {
+                        tableRow.append('<td>&nbsp;</td>');
+                    }
+                }
+
+                tableNode.append(tableRow);
+            }
+
+            if (title) {
+                wrapper.append('<strong>'+title+'</strong>');
+            }
+
+            wrapper.append(tableNode);
+            return $(containerSelector).append(wrapper);
+        };
+
+        var drawTables = function () {
+            $.ajax({
+                type: "GET",
+                url: "./metrics/"+$("#iterator").val()+".json",
+                dataType: "text",
+                contentType: "text/plain; charset=utf-8",
+            }).done(function(data) {
+                parsed = JSON.parse(data);
+
+                $('div.row').empty();
+
+                for (var key in parsed) {
+                    jsonTable(
+                        key,
+                        parsed[key],
+                        key.indexOf('timezones') !== -1 ? 'div.row.first' : 'div.row.second'
+                    );
+                }
+            });
+        };
+
+        $(document).ready(function() {
+            // set to fire on every iterator change
+            $("#iterator").change(function () {
+                drawTables();
+            });
+
+            // and fire initially...
+            drawTables();
+        });
+    </script>
+</body>
+</html>

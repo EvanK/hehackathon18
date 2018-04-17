@@ -1,0 +1,19 @@
+{
+  "name": "hehackathon18",
+  "version": "1.0.0",
+  "description": "Evan's Hackathon 2018 Project",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EvanK/hehackathon18"
+  },
+  "dependencies": {
+    "colors": "^1.2.1",
+    "easy-table": "^1.1.1",
+    "knex": "^0.14.6",
+    "moment-timezone": "^0.5.14",
+    "mysql": "^2.15.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
