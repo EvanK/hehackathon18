@@ -10,7 +10,7 @@ Go ahead, click through and read the details. I'll wait.
 
 Let's say your javascript runs in UTC (the default for AWS Lambda functions), while your database runs in Central.
 
-At 2pm CDT, you create a native javascript Date object, and use it in a SQL insertion. When you check your database, you'd expect to see a time of 14:00...instead, you'll find 19:00. This is because CDT is GMT-5, or UTC/GMT time _minus 5 hours_, and javascript drops any timezone info, sending only the date and time. Your database naturally assumes you are in the same zone and saves the time exactly as given.
+At 2pm CDT, you create a native javascript Date object, and use it in a SQL insertion. When you check your database, you'd expect to see a time of 14:00...instead, you'll find 19:00. This is because CDT is GMT-5, or UTC/GMT time _minus 5 hours_, and javascript drops any timezone info, sending only the _local_ date and time. Your database naturally assumes you are in the same zone as it is, and saves the time _exactly as given_.
 
 Think it can't get more confusing? It can! If your database already had a record created at 14:00 (CDT) and you fetch it in your (UTC) javascript, you'll get a native Date object at 14:00 _in your local timezone_...which is 14:00 UTC. Yikes.
 
