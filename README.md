@@ -22,8 +22,8 @@ To demonstrate this problem, I've written a bash script (wrapping docker, docker
 
 * `DATABASE_TZ` - Timezone for the database container. Defaults to UTC
 * `NODEJS_TZ` - Timezone for the javascript container. Defaults to UTC
-* `SESSION_TZ` - Timezone (if any) to set on the _connection_ from javascript to database (acceptable values are an empty string, `js`, or `db`)
-* `ENV_TZ_OVERRIDE` - Timezone (if any) to immediately set _in the javascript code_, overriding the container's preconfigured zone. Defaults to the database's `SYSTEM` timezone
+* `SESSION_TZ` - Timezone (if any) to set on the _connection_ from javascript to database (acceptable values are an empty string, `js`, or `db`). Defaults to the database's `SYSTEM` timezone
+* `ENV_TZ_OVERRIDE` - Timezone (if any) to immediately set _in the javascript code_, overriding the container's preconfigured zone
 
 To run a single instance with default values:
 
@@ -31,9 +31,9 @@ To run a single instance with default values:
 
 Or with specific values:
 
-> `DATABASE_TZ="America/Chicago" NODEJS_TZ="UTC" ./run.sh`
+> `DATABASE_TZ="America/Chicago" NODEJS_TZ="America/Los_Angeles" ./run.sh`
 
-And to run through _every unique combination_ of those values:
+And to run through _every unique combination_ of those values (as defined in the below noted python script):
 
 > `./all.py`
 
